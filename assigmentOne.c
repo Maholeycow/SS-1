@@ -8,9 +8,12 @@
  */
 
 #include<stdio.h>
-//#include<conio.h>
+#include<string.h>
+#include<stdlib.h>
 
-int makearg(char s[], char **args[]); //accepts a string, and a pointer to a pointer to char
+int makearg(char s[], char **args[]);
+void append(char *h, char c); // adds a letter to whatever string given
+
 
 int main(void)
 {
@@ -20,41 +23,97 @@ int main(void)
 
   printf("Number of arguments found: %d\n", argc);
 
-  /*  for(int i=1; i<argc; i++)
+  int i = 0;
+  /*if(args[i]!=NULL){
+   for(i; i<argc; i++)
     {
       printf("These are the arguments found: /n");
-      printf("%s\n", **args[i]);
+      printf("%s\n", args[i]);
     }
+  }
   */
+  //  printf("Did it change in memory: %s\n", *args[0]);
+  
+  printf("Size of args in main: %lu\n\n", sizeof(**args));
+
+  free (args);
+    
   return 0;
 }
 
-int makearg(char s[], char **args[])
+int makearg(char *s, char **args[])
 {
-  char *q; //pointer to the string so I can find out how many tokens
-  q = s;
+  char *strPtrOne, *strPtrTwo; //pointers to the string
+  strPtrOne = s;
   int space = 0;
-  int i = 0;
-
-  for(space; *q; q++){
-    if(*q!=' ')
-      continue;
-    space++;
+  
+  for(space; *strPtrOne != '\0'; strPtrOne++){
+    if(*strPtrOne!=' ')
+      continue; //If we see a space, we go to the next loop
+    space++; //Keep track of how many spaces
   }
 
   int count = space + 1; //this sets count to the number of token
-
+  
   getchar(); //this is to handle if the string were empty
 
-  args = (
-  args[0] = count;
+  args = malloc(count * sizeof(char*)); // allocate the array index size
+  if (NULL == args) { //This is to handle error of allocation
+    fprintf(stderr, "malloc failed\n");
+    return(-1);
+  }
 
-
-  
-  for(i; i < count; i++)
+  int i = 0;
+  int k = 0;
+  strPtrTwo = s;
+  char str[10] = "";
+  while(*strPtrTwo != '\0')
     {
-      
+      if(*strPtrTwo==' ')
+	{
+	  printf("stringInStr: %s\n", str);
+	  printf("valueOfK: %d\n", k);
+	  //args[k] = malloc(strlen(str) * sizeof*args[k]);
+	  printf("stringLength: %lu\n", strlen(str));
+	  args[k] = malloc(strlen(str)*sizeof(char*));
+	  *args[k] = str;  
+	  printf("stringInArgs: %s\n", *args[k]);
+	  memset(str, 0, strlen(str)); //this empties the string
+	  printf("Did string reset: %s\n\n", str);
+	  k++;
+    	} else {
+	append(str, *strPtrTwo);
+	printf("charByChar: %s\n", str);}
+      strPtrTwo++;
     }
-  
-  return *args;
+  printf("lastValueOfStr: %s\n", str);
+  printf("valueOfK: %d\n", k);
+  printf("stringLength: %lu\n", strlen(str));
+  args[k] = malloc(strlen(str) * sizeof*args[k]);
+  printf("whereIsTheError: %s\n", *args[k]);
+  //strcat(args[k], str);
+  *args[k] = str;
+  printf("isTheErrorHere: %s\n", *args[k]);
+  printf("index0: %s\n", *args[0]);
+  printf("index1: %s\n", *args[1]);
+  printf("index2: %s\n", *args[2]);
+  printf("%lu\n", sizeof(**args));
+  //printf("%s\n", **args);
+
+  for(int p = 0; p<count; p++)
+    {
+      printf("Arguments: %s\n", *args[p]);
+    }
+
+  return count;
+  //return *args;
 }
+
+void append(char h[], char c)
+{
+  int len = strlen(h);
+  h[len] = c;
+  h[len+1] = '\0';
+}
+
+ 
